@@ -1,26 +1,35 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { Game } from "@/components/game/Game";
 
 export const Route = createFileRoute("/")({
   component: Index,
+  head: () => ({
+    meta: [
+      { title: "Love Quest — A Pixel Romance Mini Game" },
+      {
+        name: "description",
+        content:
+          "A romantic pixel-aesthetic interactive love quiz. Play through cute scenes, answer questions, and unlock a heartfelt final letter.",
+      },
+      { property: "og:title", content: "Love Quest — A Pixel Romance Mini Game" },
+      {
+        property: "og:description",
+        content: "Play a tiny pixel adventure made just for you ♡",
+      },
+    ],
+    links: [
+      {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Caveat:wght@500;700&display=swap",
+      },
+    ],
+  }),
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return <Game />;
 }
