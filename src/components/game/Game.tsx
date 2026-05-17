@@ -638,16 +638,6 @@ export function Game() {
                   <FutureLetter />
                 </motion.div>
 
-                {/* Couple Card Generator */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 2.84 }}
-                  className="mb-4 w-full flex justify-center"
-                >
-                  <CoupleCard />
-                </motion.div>
-
                 <motion.div
                   initial={{ y: 30, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
