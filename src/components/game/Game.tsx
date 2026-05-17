@@ -27,7 +27,7 @@ import { AnniversaryCountdown } from "./AnniversaryCountdown";
 import { LoveStats } from "./LoveStats";
 import { StarryNightWish } from "./StarryNightWish";
 import { FutureLetter } from "./FutureLetter";
-import { CoupleCard } from "./CoupleCard";
+
 import { sfx, startBgm, stopBgm } from "@/lib/sound";
 
 type Phase =
