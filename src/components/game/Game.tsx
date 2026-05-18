@@ -25,7 +25,7 @@ import { LoveTimeline } from "./LoveTimeline";
 import { LetterVault } from "./LetterVault";
 import { AnniversaryCountdown } from "./AnniversaryCountdown";
 import { LoveStats } from "./LoveStats";
-import { StarryNightWish } from "./StarryNightWish";
+
 import { FutureLetter } from "./FutureLetter";
 
 import { sfx, startBgm, stopBgm } from "@/lib/sound";
