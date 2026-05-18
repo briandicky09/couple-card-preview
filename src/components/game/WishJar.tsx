@@ -21,14 +21,11 @@ function loadWishes(): Wish[] {
 export function WishJar() {
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [text, setText] = useState("");
-  const [randomWish, setRandomWish] = useState<Wish | null>(null);
+  const [showAll, setShowAll] = useState(false);
+  const [justDropped, setJustDropped] = useState(false);
 
   useEffect(() => {
-    const all = loadWishes();
-    setWishes(all);
-    if (all.length > 0) {
-      setRandomWish(all[Math.floor(Math.random() * all.length)]);
-    }
+    setWishes(loadWishes());
   }, []);
 
   const submit = () => {
@@ -39,6 +36,15 @@ export function WishJar() {
     localStorage.setItem(KEY, JSON.stringify(next));
     setWishes(next);
     setText("");
+    setShowAll(true);
+    setJustDropped(true);
+    setTimeout(() => setJustDropped(false), 1600);
+  };
+
+  const removeWish = (idx: number) => {
+    const next = wishes.filter((_, i) => i !== idx);
+    localStorage.setItem(KEY, JSON.stringify(next));
+    setWishes(next);
   };
 
   return (
@@ -48,25 +54,6 @@ export function WishJar() {
         <div className="font-pixel text-[10px] text-[var(--pink-deep)]">WISH JAR</div>
       </div>
 
-      <AnimatePresence mode="wait">
-        {randomWish && (
-          <motion.div
-            key={randomWish.text}
-            initial={{ opacity: 0, y: -6 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className="mb-3 px-3 py-2 bg-[var(--pink)]/30 border-2 border-dashed border-[var(--brown)]"
-          >
-            <div className="font-pixel text-[8px] text-[var(--sage-deep)] mb-1">
-              ✦ A WISH FROM {randomWish.date.toUpperCase()}
-            </div>
-            <div className="font-hand text-lg text-[var(--brown)] leading-tight">
-              "{randomWish.text}"
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
@@ -75,10 +62,13 @@ export function WishJar() {
         maxLength={140}
         className="w-full font-display text-base text-[var(--brown)] bg-white/70 border-2 border-[var(--brown)] p-2 outline-none resize-none placeholder:text-[var(--brown)]/50"
       />
-      <div className="flex items-center justify-between mt-2">
-        <span className="font-pixel text-[8px] text-[var(--brown)]/70">
-          {wishes.length} saved
-        </span>
+      <div className="flex items-center justify-between mt-2 gap-2">
+        <button
+          onClick={() => setShowAll((s) => !s)}
+          className="font-pixel text-[8px] text-[var(--brown)]/80 underline"
+        >
+          {wishes.length} SAVED {wishes.length > 0 ? (showAll ? "▲ HIDE" : "▼ SHOW") : ""}
+        </button>
         <button
           onClick={submit}
           disabled={!text.trim()}
@@ -87,6 +77,55 @@ export function WishJar() {
           ♡ DROP WISH
         </button>
       </div>
+
+      <AnimatePresence>
+        {justDropped && (
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mt-2 font-pixel text-[8px] text-[var(--sage-deep)] text-center"
+          >
+            ✦ WISH DROPPED INTO THE JAR ✦
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence initial={false}>
+        {showAll && wishes.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mt-3 space-y-2 max-h-56 overflow-y-auto pr-1"
+          >
+            {wishes.map((w, i) => (
+              <motion.div
+                key={`${w.date}-${i}`}
+                initial={{ opacity: 0, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-start gap-2 px-3 py-2 bg-[var(--pink)]/30 border-2 border-dashed border-[var(--brown)]"
+              >
+                <div className="flex-1 min-w-0">
+                  <div className="font-pixel text-[8px] text-[var(--sage-deep)] mb-1">
+                    ✦ {w.date.toUpperCase()}
+                  </div>
+                  <div className="font-hand text-base text-[var(--brown)] leading-tight break-words">
+                    "{w.text}"
+                  </div>
+                </div>
+                <button
+                  onClick={() => removeWish(i)}
+                  aria-label="remove wish"
+                  className="font-pixel text-[10px] text-[var(--brown)]/60 hover:text-[var(--pink-deep)] shrink-0"
+                >
+                  ✕
+                </button>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
