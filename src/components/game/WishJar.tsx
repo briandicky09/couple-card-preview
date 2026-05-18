@@ -21,14 +21,11 @@ function loadWishes(): Wish[] {
 export function WishJar() {
   const [wishes, setWishes] = useState<Wish[]>([]);
   const [text, setText] = useState("");
-  const [randomWish, setRandomWish] = useState<Wish | null>(null);
+  const [showAll, setShowAll] = useState(false);
+  const [justDropped, setJustDropped] = useState(false);
 
   useEffect(() => {
-    const all = loadWishes();
-    setWishes(all);
-    if (all.length > 0) {
-      setRandomWish(all[Math.floor(Math.random() * all.length)]);
-    }
+    setWishes(loadWishes());
   }, []);
 
   const submit = () => {
@@ -39,6 +36,15 @@ export function WishJar() {
     localStorage.setItem(KEY, JSON.stringify(next));
     setWishes(next);
     setText("");
+    setShowAll(true);
+    setJustDropped(true);
+    setTimeout(() => setJustDropped(false), 1600);
+  };
+
+  const removeWish = (idx: number) => {
+    const next = wishes.filter((_, i) => i !== idx);
+    localStorage.setItem(KEY, JSON.stringify(next));
+    setWishes(next);
   };
 
   return (
