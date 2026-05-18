@@ -48,7 +48,7 @@ export function WishJar() {
   };
 
   return (
-    <div className="w-full max-w-md bg-[var(--cream)] border-4 border-[var(--brown)] pixel-shadow-sm p-4 text-left">
+    <div className="w-full max-w-md bg-[var(--cream)] border-4 border-[var(--brown)] pixel-shadow-sm p-4 pr-5 pb-5 text-left overflow-visible">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-2xl">🫙</span>
         <div className="font-pixel text-[10px] text-[var(--pink-deep)]">WISH JAR</div>
@@ -62,7 +62,7 @@ export function WishJar() {
         maxLength={140}
         className="w-full font-display text-base text-[var(--brown)] bg-white/70 border-2 border-[var(--brown)] p-2 outline-none resize-none placeholder:text-[var(--brown)]/50"
       />
-      <div className="flex items-center justify-between mt-2 gap-2">
+      <div className="flex flex-wrap items-center justify-between mt-3 gap-3">
         <button
           onClick={() => setShowAll((s) => !s)}
           className="font-pixel text-[8px] text-[var(--brown)]/80 underline"
@@ -72,7 +72,7 @@ export function WishJar() {
         <button
           onClick={submit}
           disabled={!text.trim()}
-          className="font-pixel text-[9px] px-3 py-2 bg-[var(--pink-deep)] text-[var(--cream)] border-2 border-[var(--brown)] pixel-shadow-sm disabled:opacity-50"
+          className="font-pixel text-[9px] px-3 py-2 mr-1 bg-[var(--pink-deep)] text-[var(--cream)] border-2 border-[var(--brown)] pixel-shadow-sm disabled:opacity-50"
         >
           ♡ DROP WISH
         </button>
