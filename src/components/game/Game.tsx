@@ -618,16 +618,6 @@ export function Game() {
                   <LoveStats />
                 </motion.div>
 
-                {/* Starry Night Wish */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 2.80 }}
-                  className="mb-4 w-full flex justify-center"
-                >
-                  <StarryNightWish />
-                </motion.div>
-
                 {/* Future Letter */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
