@@ -25,7 +25,7 @@ import { LoveTimeline } from "./LoveTimeline";
 import { LetterVault } from "./LetterVault";
 import { AnniversaryCountdown } from "./AnniversaryCountdown";
 import { LoveStats } from "./LoveStats";
-import { StarryNightWish } from "./StarryNightWish";
+
 import { FutureLetter } from "./FutureLetter";
 
 import { sfx, startBgm, stopBgm } from "@/lib/sound";
@@ -616,16 +616,6 @@ export function Game() {
                   className="mb-4 w-full flex justify-center"
                 >
                   <LoveStats />
-                </motion.div>
-
-                {/* Starry Night Wish */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 2.80 }}
-                  className="mb-4 w-full flex justify-center"
-                >
-                  <StarryNightWish />
                 </motion.div>
 
                 {/* Future Letter */}
