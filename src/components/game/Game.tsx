@@ -420,7 +420,8 @@ export function Game() {
             className="absolute inset-0"
           >
             <PixelBackground variant="night">
-              <div className="h-full w-full flex flex-col items-center justify-center px-4 text-center overflow-y-auto py-10">
+              <div className="h-full w-full overflow-y-auto px-4 py-8 sm:py-10">
+                <div className="mx-auto flex min-h-full w-full max-w-5xl flex-col items-center justify-start text-center">
                 {Array.from({ length: 12 }).map((_, i) => (
                   <motion.div
                     key={i}
@@ -652,6 +653,7 @@ export function Game() {
                     💌 OPEN FINAL GIFT
                   </PixelButton>
                 </motion.div>
+                </div>
               </div>
             </PixelBackground>
           </motion.div>
