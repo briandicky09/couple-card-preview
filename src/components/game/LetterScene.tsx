@@ -63,7 +63,7 @@ export function LetterScene({ onRestart, onMemory }: { onRestart?: () => void; o
 
   return (
     <PixelBackground variant="garden">
-      <div className="relative h-full w-full flex items-center justify-center p-4 sm:p-8 overflow-y-auto">
+      <div className="relative h-full w-full overflow-y-auto px-4 py-6 sm:px-8 sm:py-8">
         {Array.from({ length: 14 }).map((_, i) => (
           <motion.div
             key={i}
@@ -87,7 +87,7 @@ export function LetterScene({ onRestart, onMemory }: { onRestart?: () => void; o
             whileHover={{ scale: 1.05, rotate: 2 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 200 }}
-            className="relative bg-[var(--cream)] border-4 border-[var(--brown)] pixel-shadow p-8 animate-glow"
+            className="relative mx-auto mt-6 bg-[var(--cream)] border-4 border-[var(--brown)] pixel-shadow p-8 animate-glow"
           >
             <div className="text-7xl mb-3">💌</div>
             <div className="font-pixel text-xs text-[var(--brown)]">CLICK TO OPEN</div>
@@ -97,7 +97,7 @@ export function LetterScene({ onRestart, onMemory }: { onRestart?: () => void; o
         {stage === "opening" && (
           <motion.div
             key="opening"
-            className="relative"
+            className="relative mx-auto mt-6"
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             exit={{ opacity: 0 }}
@@ -140,7 +140,7 @@ export function LetterScene({ onRestart, onMemory }: { onRestart?: () => void; o
             initial={{ scale: 0.3, rotateX: 90, opacity: 0 }}
             animate={{ scale: 1, rotateX: 0, opacity: 1 }}
             transition={{ duration: 0.9, ease: "backOut" }}
-            className="relative w-full max-w-lg my-6"
+            className="relative mx-auto w-full max-w-lg py-2 sm:py-4"
           >
             <div
               ref={cardRef}
@@ -214,7 +214,7 @@ export function LetterScene({ onRestart, onMemory }: { onRestart?: () => void; o
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 3.2, duration: 0.4 }}
-                className="mt-5 flex flex-wrap items-center justify-center gap-3"
+              className="mt-5 flex flex-wrap items-center justify-center gap-3 pb-3"
               >
                 <button
                   onClick={handleSave}

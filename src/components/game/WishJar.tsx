@@ -48,7 +48,7 @@ export function WishJar() {
   };
 
   return (
-    <div className="w-full max-w-md bg-[var(--cream)] border-4 border-[var(--brown)] pixel-shadow-sm p-4 pr-5 pb-5 text-left overflow-visible">
+    <div className="w-full max-w-md bg-[var(--cream)] border-4 border-[var(--brown)] pixel-shadow-sm p-4 pr-5 pb-5 text-left overflow-visible min-h-0">
       <div className="flex items-center gap-2 mb-2">
         <span className="text-2xl">🫙</span>
         <div className="font-pixel text-[10px] text-[var(--pink-deep)]">WISH JAR</div>
@@ -97,7 +97,7 @@ export function WishJar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-3 space-y-2 max-h-56 overflow-y-auto pr-1"
+            className="mt-3 space-y-2 max-h-56 overflow-y-auto overscroll-contain pr-1 pb-1"
           >
             {wishes.map((w, i) => (
               <motion.div
