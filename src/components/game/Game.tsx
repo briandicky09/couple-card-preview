@@ -98,15 +98,54 @@ interface MiniStats {
   puzzle?: { time: number; ok: boolean };
 }
 
+const PROGRESS_KEY = "kania-game-progress";
+
+interface SavedProgress {
+  phase: Phase;
+  dialogIdx: number;
+  qIdx: number;
+  miniIdx: number;
+  lives: number;
+  startTime: number | null;
+  endTime: number | null;
+  mini: MiniStats;
+}
+
+function loadProgress(): SavedProgress | null {
+  try {
+    const r = localStorage.getItem(PROGRESS_KEY);
+    if (r) return JSON.parse(r) as SavedProgress;
+  } catch {}
+  return null;
+}
+
 export function Game() {
-  const [phase, setPhase] = useState<Phase>("opening");
-  const [dialogIdx, setDialogIdx] = useState(0);
-  const [qIdx, setQIdx] = useState(0);
-  const [miniIdx, setMiniIdx] = useState(0);
-  const [lives, setLives] = useState(3);
-  const [startTime, setStartTime] = useState<number | null>(null);
-  const [endTime, setEndTime] = useState<number | null>(null);
-  const [mini, setMini] = useState<MiniStats>({});
+  const saved = typeof window !== "undefined" ? loadProgress() : null;
+  const [phase, setPhase] = useState<Phase>(saved?.phase ?? "opening");
+  const [dialogIdx, setDialogIdx] = useState(saved?.dialogIdx ?? 0);
+  const [qIdx, setQIdx] = useState(saved?.qIdx ?? 0);
+  const [miniIdx, setMiniIdx] = useState(saved?.miniIdx ?? 0);
+  const [lives, setLives] = useState(saved?.lives ?? 3);
+  const [startTime, setStartTime] = useState<number | null>(saved?.startTime ?? null);
+  const [endTime, setEndTime] = useState<number | null>(saved?.endTime ?? null);
+  const [mini, setMini] = useState<MiniStats>(saved?.mini ?? {});
+
+  // Persist progress to localStorage on every relevant change
+  useEffect(() => {
+    try {
+      const payload: SavedProgress = {
+        phase,
+        dialogIdx,
+        qIdx,
+        miniIdx,
+        lives,
+        startTime,
+        endTime,
+        mini,
+      };
+      localStorage.setItem(PROGRESS_KEY, JSON.stringify(payload));
+    } catch {}
+  }, [phase, dialogIdx, qIdx, miniIdx, lives, startTime, endTime, mini]);
 
   useEffect(() => {
     if (phase === "ending") sfx.win();
@@ -124,7 +163,11 @@ export function Game() {
     setEndTime(null);
     setMini({});
     setPhase("opening");
+    try {
+      localStorage.removeItem(PROGRESS_KEY);
+    } catch {}
   };
+
 
   const advanceAfterQuestion = () => {
     if (qIdx + 1 < QUESTIONS.length) {

@@ -78,26 +78,28 @@ export function LetterScene({ onRestart, onMemory }: { onRestart?: () => void; o
 
         <AnimatePresence mode="wait">
         {stage === "closed" && (
-          <motion.button
-            key="closed"
-            onClick={() => setStage("opening")}
-            initial={{ scale: 0, rotate: -10 }}
-            animate={{ scale: 1, rotate: 0 }}
-            exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.05, rotate: 2 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 200 }}
-            className="relative mx-auto mt-6 bg-[var(--cream)] border-4 border-[var(--brown)] pixel-shadow p-8 animate-glow"
-          >
-            <div className="text-7xl mb-3">💌</div>
-            <div className="font-pixel text-xs text-[var(--brown)]">CLICK TO OPEN</div>
-          </motion.button>
+          <div key="closed-wrap" className="w-full flex justify-center mt-6">
+            <motion.button
+              key="closed"
+              onClick={() => setStage("opening")}
+              initial={{ scale: 0, rotate: -10 }}
+              animate={{ scale: 1, rotate: 0 }}
+              exit={{ scale: 0, opacity: 0 }}
+              whileHover={{ scale: 1.05, rotate: 2 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 200 }}
+              className="relative bg-[var(--cream)] border-4 border-[var(--brown)] pixel-shadow p-8 animate-glow text-center"
+            >
+              <div className="text-7xl mb-3">💌</div>
+              <div className="font-pixel text-xs text-[var(--brown)]">CLICK TO OPEN</div>
+            </motion.button>
+          </div>
         )}
 
         {stage === "opening" && (
           <motion.div
             key="opening"
-            className="relative mx-auto mt-6"
+            className="relative mt-6 mx-auto w-fit flex flex-col items-center"
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             exit={{ opacity: 0 }}
