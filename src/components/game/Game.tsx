@@ -138,6 +138,16 @@ export function Game() {
   const [startTime, setStartTime] = useState<number | null>(saved?.startTime ?? null);
   const [endTime, setEndTime] = useState<number | null>(saved?.endTime ?? null);
   const [mini, setMini] = useState<MiniStats>(saved?.mini ?? {});
+  const [completions] = useState<number>(() =>
+    typeof window !== "undefined" ? loadCompletions() : 0,
+  );
+  const canSkip = completions > 0;
+
+  const skipToEnd = () => {
+    sfx.click();
+    setEndTime(performance.now());
+    setPhase("ending");
+  };
 
   // Persist progress to localStorage on every relevant change
   useEffect(() => {
