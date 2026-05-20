@@ -99,6 +99,7 @@ interface MiniStats {
 }
 
 const PROGRESS_KEY = "kania-game-progress";
+const COMPLETIONS_KEY = "kania-game-completions";
 
 interface SavedProgress {
   phase: Phase;
@@ -117,6 +118,14 @@ function loadProgress(): SavedProgress | null {
     if (r) return JSON.parse(r) as SavedProgress;
   } catch {}
   return null;
+}
+
+function loadCompletions(): number {
+  try {
+    const r = localStorage.getItem(COMPLETIONS_KEY);
+    if (r) return parseInt(r, 10) || 0;
+  } catch {}
+  return 0;
 }
 
 export function Game() {
