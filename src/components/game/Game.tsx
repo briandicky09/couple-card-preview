@@ -99,6 +99,7 @@ interface MiniStats {
 }
 
 const PROGRESS_KEY = "kania-game-progress";
+const COMPLETIONS_KEY = "kania-game-completions";
 
 interface SavedProgress {
   phase: Phase;
@@ -119,6 +120,14 @@ function loadProgress(): SavedProgress | null {
   return null;
 }
 
+function loadCompletions(): number {
+  try {
+    const r = localStorage.getItem(COMPLETIONS_KEY);
+    if (r) return parseInt(r, 10) || 0;
+  } catch {}
+  return 0;
+}
+
 export function Game() {
   const saved = typeof window !== "undefined" ? loadProgress() : null;
   const [phase, setPhase] = useState<Phase>(saved?.phase ?? "opening");
@@ -129,6 +138,16 @@ export function Game() {
   const [startTime, setStartTime] = useState<number | null>(saved?.startTime ?? null);
   const [endTime, setEndTime] = useState<number | null>(saved?.endTime ?? null);
   const [mini, setMini] = useState<MiniStats>(saved?.mini ?? {});
+  const [completions] = useState<number>(() =>
+    typeof window !== "undefined" ? loadCompletions() : 0,
+  );
+  const canSkip = completions > 0;
+
+  const skipToEnd = () => {
+    sfx.click();
+    setEndTime(performance.now());
+    setPhase("ending");
+  };
 
   // Persist progress to localStorage on every relevant change
   useEffect(() => {
@@ -148,7 +167,13 @@ export function Game() {
   }, [phase, dialogIdx, qIdx, miniIdx, lives, startTime, endTime, mini]);
 
   useEffect(() => {
-    if (phase === "ending") sfx.win();
+    if (phase === "ending") {
+      sfx.win();
+      try {
+        const current = loadCompletions();
+        localStorage.setItem(COMPLETIONS_KEY, String(current + 1));
+      } catch {}
+    }
   }, [phase]);
 
   useEffect(() => () => stopBgm(), []);
@@ -414,6 +439,15 @@ export function Game() {
               }}
               onNext={advanceAfterQuestion}
             />
+            {canSkip && (
+              <button
+                onClick={skipToEnd}
+                className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 font-pixel text-[9px] px-3 py-2 bg-[var(--cream)] text-[var(--brown)] border-2 border-[var(--brown)] pixel-shadow-sm hover:bg-[var(--pink)]"
+                title="Skip directly to the ending"
+              >
+                ⏭ SKIP TO THE END
+              </button>
+            )}
           </motion.div>
         )}
 
@@ -450,6 +484,15 @@ export function Game() {
                   setPhase("questions");
                 }}
               />
+            )}
+            {canSkip && (
+              <button
+                onClick={skipToEnd}
+                className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 font-pixel text-[9px] px-3 py-2 bg-[var(--cream)] text-[var(--brown)] border-2 border-[var(--brown)] pixel-shadow-sm hover:bg-[var(--pink)]"
+                title="Skip directly to the ending"
+              >
+                ⏭ SKIP TO THE END
+              </button>
             )}
           </motion.div>
         )}
