@@ -85,7 +85,7 @@ export function MemoryReel({ onDone }: Props) {
 
   return (
     <PixelBackground variant="night">
-      <div className="relative h-full w-full flex flex-col items-center justify-center px-4 py-6 overflow-hidden">
+      <div className="relative h-full w-full flex flex-col items-center px-4 py-6 overflow-y-auto overscroll-contain">
 
         {/* Header */}
         <motion.div
