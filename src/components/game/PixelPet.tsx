@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { sfx } from "@/lib/sound";
 
@@ -19,14 +19,31 @@ interface PetState {
   hunger: number;
   pets: number;
   feeds: number;
+  growth: number;          // 0..10 — increases by 1 each unique day fed
+  lastFedDate: string | null;
 }
 
 function load(): PetState {
   try {
     const r = localStorage.getItem(KEY);
-    if (r) return JSON.parse(r);
+    if (r) {
+      const parsed = JSON.parse(r);
+      return {
+        happiness: 60,
+        hunger: 40,
+        pets: 0,
+        feeds: 0,
+        growth: 0,
+        lastFedDate: null,
+        ...parsed,
+      };
+    }
   } catch {}
-  return { happiness: 60, hunger: 40, pets: 0, feeds: 0 };
+  return { happiness: 60, hunger: 40, pets: 0, feeds: 0, growth: 0, lastFedDate: null };
+}
+
+function today() {
+  return new Date().toISOString().slice(0, 10);
 }
 
 export function PixelPet() {
@@ -57,17 +74,27 @@ export function PixelPet() {
 
   const feed = () => {
     sfx.correct();
-    setState((s) => ({
-      ...s,
-      hunger: Math.max(0, s.hunger - 20),
-      happiness: Math.min(100, s.happiness + 4),
-      feeds: s.feeds + 1,
-    }));
+    setState((s) => {
+      const t = today();
+      const grewToday = s.lastFedDate !== t;
+      return {
+        ...s,
+        hunger: Math.max(0, s.hunger - 20),
+        happiness: Math.min(100, s.happiness + 4),
+        feeds: s.feeds + 1,
+        growth: grewToday ? Math.min(10, s.growth + 1) : s.growth,
+        lastFedDate: t,
+      };
+    });
     setBounce((b) => b + 1);
     showQuote();
   };
 
   const mood = state.happiness > 70 ? "♡" : state.happiness > 40 ? "·" : "˘";
+  // Scale from 1.0 -> 2.0 over 10 growth levels
+  const scale = useMemo(() => 1 + Math.min(state.growth, 10) * 0.1, [state.growth]);
+  const stage =
+    state.growth < 3 ? "kitten" : state.growth < 7 ? "young" : "chonky";
 
   return (
     <div className="w-full max-w-md bg-[var(--cream)] border-4 border-[var(--brown)] pixel-shadow-sm p-4">
@@ -75,7 +102,7 @@ export function PixelPet() {
         ✦ PIXEL PET — MOCHI ✦
       </div>
 
-      <div className="relative h-32 flex items-end justify-center bg-[var(--sage)]/30 border-2 border-[var(--brown)] mb-3 overflow-hidden">
+      <div className="relative h-40 flex items-end justify-center bg-[var(--sage)]/30 border-2 border-[var(--brown)] mb-3 overflow-hidden">
         <AnimatePresence>
           {quote && (
             <motion.div
@@ -94,9 +121,10 @@ export function PixelPet() {
           key={bounce}
           onClick={pet}
           initial={{ scale: 1 }}
-          animate={{ scale: [1, 1.15, 1], y: [0, -8, 0] }}
+          animate={{ scale: [scale, scale * 1.12, scale], y: [0, -8, 0] }}
           transition={{ duration: 0.4 }}
-          className="mb-3 cursor-pointer select-none"
+          className="mb-3 cursor-pointer select-none origin-bottom"
+          style={{ transformOrigin: "bottom center" }}
           aria-label="pet the cat"
         >
           <PixelCat mood={mood} />
@@ -106,6 +134,19 @@ export function PixelPet() {
       <div className="grid grid-cols-2 gap-2 mb-3 text-left">
         <Stat label="HAPPY" value={state.happiness} color="var(--pink-deep)" />
         <Stat label="FULL" value={100 - state.hunger} color="var(--sage-deep)" />
+      </div>
+
+      <div className="mb-3">
+        <div className="flex justify-between font-pixel text-[8px] text-[var(--brown)]/70 mb-1">
+          <span>GROWTH · {stage.toUpperCase()}</span>
+          <span>{state.growth}/10</span>
+        </div>
+        <div className="h-3 w-full bg-[var(--beige)] border-2 border-[var(--brown)]">
+          <div
+            className="h-full"
+            style={{ width: `${(state.growth / 10) * 100}%`, background: "var(--brown)" }}
+          />
+        </div>
       </div>
 
       <div className="flex gap-2 justify-center">
@@ -130,7 +171,7 @@ export function PixelPet() {
       </div>
 
       <div className="mt-2 font-pixel text-[8px] text-[var(--brown)]/70 text-center">
-        {state.pets} pets · {state.feeds} feeds
+        {state.pets} pets · {state.feeds} feeds · feed daily to grow ♡
       </div>
     </div>
   );
@@ -148,7 +189,6 @@ function Stat({ label, value, color }: { label: string; value: number; color: st
 }
 
 function PixelCat({ mood }: { mood: string }) {
-  // Simple pixel kitty using divs
   const p = "absolute";
   const px = (x: number, y: number, c: string, w = 6, h = 6) => (
     <div
@@ -159,30 +199,23 @@ function PixelCat({ mood }: { mood: string }) {
   );
   return (
     <div className="relative" style={{ width: 72, height: 64 }}>
-      {/* ears */}
       {px(8, 0, "#d4a373")}
       {px(14, 0, "#d4a373")}
       {px(50, 0, "#d4a373")}
       {px(56, 0, "#d4a373")}
-      {/* head/body */}
       {px(8, 6, "#e8b88f", 56, 36)}
-      {/* eyes */}
       {px(20, 18, "#3a2a1a", 6, 6)}
       {px(46, 18, "#3a2a1a", 6, 6)}
-      {/* blush */}
       {px(16, 28, "#f4a8c0", 6, 4)}
       {px(50, 28, "#f4a8c0", 6, 4)}
-      {/* mouth (mood) */}
       <div
         className="absolute font-pixel text-[10px] text-[#3a2a1a]"
         style={{ left: 30, top: 28 }}
       >
         {mood}
       </div>
-      {/* feet */}
       {px(14, 42, "#d4a373", 12, 8)}
       {px(46, 42, "#d4a373", 12, 8)}
-      {/* tail */}
       {px(62, 18, "#d4a373", 8, 16)}
     </div>
   );
