@@ -167,7 +167,13 @@ export function Game() {
   }, [phase, dialogIdx, qIdx, miniIdx, lives, startTime, endTime, mini]);
 
   useEffect(() => {
-    if (phase === "ending") sfx.win();
+    if (phase === "ending") {
+      sfx.win();
+      try {
+        const current = loadCompletions();
+        localStorage.setItem(COMPLETIONS_KEY, String(current + 1));
+      } catch {}
+    }
   }, [phase]);
 
   useEffect(() => () => stopBgm(), []);
