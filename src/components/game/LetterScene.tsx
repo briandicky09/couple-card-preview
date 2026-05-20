@@ -64,17 +64,6 @@ export function LetterScene({ onRestart, onMemory }: { onRestart?: () => void; o
   return (
     <PixelBackground variant="garden">
       <div className="relative h-full w-full overflow-y-auto px-4 py-6 sm:px-8 sm:py-8">
-        {Array.from({ length: 14 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute text-xl pointer-events-none"
-            initial={{ y: -20, x: `${(i / 14) * 100}%`, opacity: 0 }}
-            animate={{ y: "110vh", opacity: [0, 1, 1, 0], rotate: 360 }}
-            transition={{ duration: 12 + i, repeat: Infinity, delay: i * 0.7, ease: "linear" }}
-          >
-            🌸
-          </motion.div>
-        ))}
 
         <AnimatePresence mode="wait">
         {stage === "closed" && (
