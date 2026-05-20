@@ -485,6 +485,15 @@ export function Game() {
                 }}
               />
             )}
+            {canSkip && (
+              <button
+                onClick={skipToEnd}
+                className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 font-pixel text-[9px] px-3 py-2 bg-[var(--cream)] text-[var(--brown)] border-2 border-[var(--brown)] pixel-shadow-sm hover:bg-[var(--pink)]"
+                title="Skip directly to the ending"
+              >
+                ⏭ SKIP TO THE END
+              </button>
+            )}
           </motion.div>
         )}
 
